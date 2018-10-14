@@ -58,12 +58,12 @@ def get_money_dict(work_book, start_row, money_col, time_col, keep_col=[], oppos
     workbook = xlrd.open_workbook(work_book)
     table = workbook.sheet_by_index(0)
 
-    length = 2 + len(keep_col)
-    seq_id = 0
+    length = 3 + len(keep_col)
     total_row = table.nrows
     money_dict = {}
     for row in xrange(start_row, total_row):
         data_list = table.row_values(row)
+        seq_id = row + 1
         money = data_list[money_col]
         time = data_list[time_col]
 
@@ -91,9 +91,8 @@ def get_money_dict(work_book, start_row, money_col, time_col, keep_col=[], oppos
             if money not in money_dict:
                 money_dict[money] = []
 
-            seq_id += 1
             keep_data_list = []
-            keep_data_list.append("%05d" % seq_id)
+            keep_data_list.append(seq_id)
             keep_data_list.append(time)
             for col in keep_col:
                 keep_data = data_list[col]
@@ -119,8 +118,8 @@ def match_repeat_money(source_value, target_value, source_len, target_len):
                 result_data_list = []
 
                 # 去掉序列号
-                source_data_list.pop(0)
-                target_data_list.pop(0)
+                # source_data_list.pop(0)
+                # target_data_list.pop(0)
 
                 result_data_list.extend(source_data_list)
                 result_data_list.extend(["", ""])
@@ -156,8 +155,8 @@ def match_repeat_money(source_value, target_value, source_len, target_len):
             result_data_list = []
 
             # 去掉序列号
-            source_data_list.pop(0)
-            target_data_list.pop(0)
+            # source_data_list.pop(0)
+            # target_data_list.pop(0)
 
             result_data_list.extend(source_data_list)
             result_data_list.extend(["", ""])
@@ -172,7 +171,7 @@ def match_repeat_money(source_value, target_value, source_len, target_len):
             result_data_list = []
 
             # 去掉序列号
-            source_data_list.pop(0)
+            # source_data_list.pop(0)
 
             result_data_list.extend(source_data_list)
             result_data_list.extend(["", ""])
@@ -184,7 +183,7 @@ def match_repeat_money(source_value, target_value, source_len, target_len):
             result_data_list = []
 
             # 去掉序列号
-            target_data_list.pop(0)
+            # target_data_list.pop(0)
 
             result_data_list.extend([""] * source_len)
             result_data_list.extend(["", ""])
@@ -220,7 +219,7 @@ def compare(work_book, source_money_dict, target_money_dict, source_len, target_
                 result_data_list = []
 
                 # 去掉序列号
-                source_data_list.pop(0)
+                # source_data_list.pop(0)
 
                 result_data_list.extend(source_data_list)
                 result_data_list.extend(["", ""])
@@ -233,12 +232,18 @@ def compare(work_book, source_money_dict, target_money_dict, source_len, target_
                 result_data_list = []
 
                 # 去掉序列号
-                target_data_list.pop(0)
+                # target_data_list.pop(0)
 
                 result_data_list.extend([""] * source_len)
                 result_data_list.extend(["", ""])
                 result_data_list.extend(target_data_list)
                 target_result.append(result_data_list)
+
+    source_sort_col = source_len - 1
+    target_sort_col = source_len + 1 + target_len
+    result = sorted(result, key=lambda item: item[source_sort_col], reverse=False)
+    source_result = sorted(source_result, key=lambda item: item[source_sort_col], reverse=False)
+    target_result = sorted(target_result, key=lambda item: item[target_sort_col], reverse=False)
 
     for data_list in result:
         write_work_book(table, row, data_list)

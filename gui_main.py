@@ -273,7 +273,7 @@ def main():
     global people_money_col
     people_money_col = StringVar()
     Label(gui_main, text="借方金额/贷方金额所在列：").place(x=400, y=95, width=165, height=25)
-    Entry(gui_main, textvariable=people_money_col).place(x=565, y=95, width=62, height=25)
+    Entry(gui_main, textvariable=people_money_col, validate="key", validatecommand=(validate_col_func, "%P")).place(x=565, y=95, width=62, height=25)
     Label(gui_main, text="大写字母，如：A", fg="orange").place(x=625, y=95, width=130, height=25)
 
     global bank_opposite_flag
